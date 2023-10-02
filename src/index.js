@@ -12,10 +12,15 @@ fetch('https://api.thecatapi.com/v1/breeds')
   })
   .then(data => {
     let catNamesArr = [];
-    data.map(cat => {
-      catNamesArr.push(cat.name);
-    });
+    data
+      .filter(cat => {
+        cat.length < 7;
+      })
+      .map(catName => {
+        catNamesArr.push(catName);
+      });
     console.log(catNamesArr);
+    console.log(cat);
   })
   .catch(err => {
     console.log(err);
