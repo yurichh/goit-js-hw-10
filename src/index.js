@@ -1,27 +1,67 @@
 import axios from 'axios';
+import SlimSelect from 'slim-select';
+import Notiflix from 'notiflix';
+import { fetchBreeds, fetchCatByBreed, createMarkup } from './cat-api.js';
 
-axios.defaults.headers.common['x-api-key'] =
-  'live_XtaIkzGZj9ieaC4sFoGlLMDNTye6oG6ZVYVhIAnkDPQOkaW3uPdLZqVsKaKLLY1X';
+const select = document.querySelector('.breed-select');
+const loader = document.querySelector('.loader');
+const errorText = document.querySelector('.error');
+const catWrapper = document.querySelector('.cat-info');
+const catWrapper2 = document.querySelector('.cat-info2');
+const btn = document.querySelector('.btn');
 
-fetch('https://api.thecatapi.com/v1/breeds')
-  .then(response => {
-    if (!response.ok) {
-      throw new Error(`Error status: ${response.status}`);
-    }
-    return response.json();
-  })
+loader.style.display = 'none';
+
+// new SlimSelect({
+//   select: select,
+//   settings: { placeholderText: 'Choose a cat name' },
+//   contentPosition: 'absolute', // 'absolute' or 'relative'
+// });
+
+fetchBreeds()
   .then(data => {
-    let catNamesArr = [];
-    data
-      .filter(cat => {
-        cat.length < 7;
-      })
-      .map(catName => {
-        catNamesArr.push(catName);
-      });
-    console.log(catNamesArr);
-    console.log(cat);
+    select.innerHTML = createMarkup(data);
   })
-  .catch(err => {
-    console.log(err);
-  });
+  .catch(err => Notiflix.Notify.failure(err));
+
+select.addEventListener('change', () => {
+  catWrapper.innerHTML = '';
+  catWrapper2.innerHTML = '';
+  loader.style.display = 'block';
+  handleSearch(select.value);
+});
+
+function handleSearch(id) {
+  fetchCatByBreed(id)
+    .then(data => {
+      data.map(info => {
+        const url = info.url;
+        catWrapper.innerHTML = `<img src="${url}" alt='name' width ='400'>`;
+      });
+    })
+    .catch(err => Notiflix.Notify.failure(err));
+  fetchBreeds()
+    .then(data => {
+      data.map(info => {
+        if (info.id === select.value) {
+          catWrapper2.innerHTML = `<h1>${info.name}</h1>
+       <p>${info.description}</p>
+       <h2>Temperament:</h2>
+       <p>${info.temperament}</p>`;
+        }
+      });
+      loader.style.display = 'none';
+    })
+    .catch(err => Notiflix.Notify.failure(err));
+}
+
+// getCatInfo().then(data => {
+//   data.map(data => {
+//     const catData = {
+//       name: data.name,
+//       description: data.description,
+//       temperament: data.temperament,
+//     };
+//     console.log(catData);
+//   });
+// });
