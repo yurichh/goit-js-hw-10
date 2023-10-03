@@ -1,14 +1,10 @@
-import axios from 'axios';
-import SlimSelect from 'slim-select';
 import Notiflix from 'notiflix';
 import { fetchBreeds, fetchCatByBreed, createMarkup } from './cat-api.js';
 
 const select = document.querySelector('.breed-select');
 const loader = document.querySelector('.loader');
-const errorText = document.querySelector('.error');
 const catWrapper = document.querySelector('.cat-info');
 const catWrapper2 = document.querySelector('.cat-info2');
-const btn = document.querySelector('.btn');
 
 loader.style.display = 'none';
 
@@ -22,7 +18,10 @@ fetchBreeds()
   .then(data => {
     select.innerHTML = createMarkup(data);
   })
-  .catch(err => Notiflix.Notify.failure(err));
+  .catch(err => {
+    console.log(err);
+    Notiflix.Notify.failure(`${err}`);
+  });
 
 select.addEventListener('change', () => {
   catWrapper.innerHTML = '';
@@ -39,7 +38,12 @@ function handleSearch(id) {
         catWrapper.innerHTML = `<img src="${url}" alt='name' width ='400'>`;
       });
     })
-    .catch(err => Notiflix.Notify.failure(err));
+    .catch(err => {
+      catWrapper2.innerHTML = '';
+      catWrapper.innerHTML = '';
+      Notiflix.Notify.failure(`${err}`);
+      return;
+    });
   fetchBreeds()
     .then(data => {
       data.map(info => {
@@ -52,7 +56,12 @@ function handleSearch(id) {
       });
       loader.style.display = 'none';
     })
-    .catch(err => Notiflix.Notify.failure(err));
+    .catch(err => {
+      catWrapper.innerHTML = '';
+      catWrapper2.innerHTML = '';
+      Notiflix.Notify.failure(`${err}`);
+      return;
+    });
 }
 
 // getCatInfo().then(data => {
