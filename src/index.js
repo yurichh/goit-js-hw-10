@@ -34,6 +34,7 @@ function handleSearch(id) {
   fetchCatByBreed(id)
     .then(data => {
       data.map(info => {
+        loader.style.display = 'none';
         const url = info.url;
         catWrapper.innerHTML = `<img src="${url}" alt='name' width ='400'>`;
       });
@@ -47,6 +48,7 @@ function handleSearch(id) {
   fetchBreeds()
     .then(data => {
       data.map(info => {
+        loader.style.display = 'none';
         if (info.id === select.value) {
           catWrapper2.innerHTML = `<h1>${info.name}</h1>
        <p>${info.description}</p>
@@ -54,7 +56,6 @@ function handleSearch(id) {
        <p>${info.temperament}</p>`;
         }
       });
-      loader.style.display = 'none';
     })
     .catch(err => {
       catWrapper.innerHTML = '';
