@@ -1,11 +1,9 @@
 import axios from 'axios';
 import Notiflix from 'notiflix';
 
-const url = `https://api.thecatapi.com/v1/breeds`;
-const api_key =
+const API_KEY =
   'live_XtaIkzGZj9ieaC4sFoGlLMDNTye6oG6ZVYVhIAnkDPQOkaW3uPdLZqVsKaKLLY1X';
-axios.defaults.headers.common['x-api-key'] = api_key;
-
+const BASE_URL = `https://api.thecatapi.com/v1/breeds`;
 function createMarkup(arr) {
   return arr
     .map(({ id, name }) => `<option value ="${id}">${name}</option>`)
@@ -13,7 +11,7 @@ function createMarkup(arr) {
 }
 
 function fetchBreeds() {
-  return fetch(url).then(response => {
+  return fetch(BASE_URL).then(response => {
     if (!response.ok) {
       throw new Error(`Вимушена помилка статусу: ${response.status}`);
     }
@@ -23,7 +21,7 @@ function fetchBreeds() {
 
 function fetchCatByBreed(breedId) {
   return fetch(
-    `https://api.thecatapi.com/v1/images/search?breed_ids=${breedId}`
+    `https://api.thecatapi.com/v1/images/search?breed_ids=${breedId}&api_key=${API_KEY}`
   ).then(response => {
     if (!response.ok) {
       throw new Error(`Вимушена помилка статусу: ${response.status}`);
