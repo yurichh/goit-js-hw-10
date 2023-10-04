@@ -35,7 +35,6 @@ function handleSearch(id) {
   fetchCatByBreed(id)
     .then(data => {
       data.map(info => {
-        console.log(info.breeds);
         info.breeds.map(cat => {
           const catData = {
             name: cat.name,
